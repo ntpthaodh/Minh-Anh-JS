@@ -5,6 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kết Quả Kiểm Tra Hình Lập Phương</title>
     <link rel="stylesheet" href="../css/ketquakthhcn.css">
+    <!-- CÔ LẬP LOCALSTORAGE CHO CHỦ ĐỀ ctgd -->
+    <script>
+      (function() {
+        const topicId = "ctgd";
+        const targetKeys = ["daNopBaiTrangThai", "dangXemLai", "mangDapAnNguoiDung", "diemTracNghiem", "tongSoCau"];
+        const originalGetItem = localStorage.getItem.bind(localStorage);
+        const originalSetItem = localStorage.setItem.bind(localStorage);
+        const originalRemoveItem = localStorage.removeItem.bind(localStorage);
+
+        localStorage.getItem = function(key) {
+          if (targetKeys.includes(key)) {
+            return originalGetItem(topicId + "_" + key);
+          }
+          return originalGetItem(key);
+        };
+
+        localStorage.setItem = function(key, value) {
+          if (targetKeys.includes(key)) {
+            return originalSetItem(topicId + "_" + key, value);
+          }
+          return originalSetItem(key, value);
+        };
+
+        localStorage.removeItem = function(key) {
+          if (targetKeys.includes(key)) {
+            return originalRemoveItem(topicId + "_" + key);
+          }
+          return originalRemoveItem(key);
+        };
+      })();
+    </script>
 </head>
 <body>
 

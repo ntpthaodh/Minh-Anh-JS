@@ -266,6 +266,25 @@ const danhSachCauHoi = [
   }
 ];
 
+// Khai báo cấu hình riêng cho bài kiểm tra
+const redirectUrl = "ketquakthltdtg.html";
+const timerKey = "timer_hltdtg";
+const topicId = "hltdtg";
+
+// Kiểm tra chuyển đổi chủ đề để tránh xung đột dữ liệu localStorage
+if (localStorage.getItem("activeTopic") !== topicId) {
+  localStorage.setItem("daNopBaiTrangThai", "false");
+  localStorage.setItem("dangXemLai", "false");
+  localStorage.removeItem("mangDapAnNguoiDung");
+  localStorage.removeItem("diemTracNghiem");
+  for (let key in localStorage) {
+    if (key.startsWith("timer_")) {
+      localStorage.removeItem(key);
+    }
+  }
+  localStorage.setItem("activeTopic", topicId);
+}
+
 // Khai báo biến trạng thái ban đầu
 let viTriCauHienTai = 0;
 let daNopBai = localStorage.getItem("daNopBaiTrangThai") === "true";
@@ -273,14 +292,12 @@ let dangXemLai = localStorage.getItem("dangXemLai") === "true";
 
 // === ĐOẠN RESET CHỈ KHI LÀM BÀI MỚI TINH ===
 if (!dangXemLai) {
-  if (
-    window.location.pathname.includes("kiemtrahhcn.html") ||
-    window.location.pathname.includes("kiemtrahlp.html")
-  ) {
+  if (window.location.pathname.includes("kiemtrahltdtg.html")) {
     daNopBai = false;
     localStorage.setItem("daNopBaiTrangThai", "false");
     localStorage.setItem("dangXemLai", "false");
     localStorage.removeItem("mangDapAnNguoiDung");
+    localStorage.removeItem(timerKey);
   }
 }
 
@@ -413,6 +430,7 @@ function taiCauHoi() {
   }
 
   capNhatNutDieuHuong();
+  renderPalette();
 
   // Gọi MathJax kết xuất lại công thức toán học sau khi render câu hỏi động bằng JS
   if (window.MathJax && window.MathJax.typeset) {
@@ -470,6 +488,7 @@ function chonDapAn(indexChon) {
   });
 
   capNhatNutDieuHuong();
+  renderPalette();
 }
 
 // Bấm tiếp theo hoặc kích hoạt nộp bài chuyển trang
@@ -497,54 +516,17 @@ function cauTiepTheo() {
       ).length;
 
       if (soCauChuaLam > 0) {
-        alert(
-          `Không thể nộp bài! Bạn còn ${soCauChuaLam} câu chưa làm.\nHệ thống sẽ tự động chuyển bạn về câu chưa làm đầu tiên.`,
+        const xacNhanNop = confirm(
+          `Bạn còn ${soCauChuaLam} câu chưa hoàn thành. Các câu này sẽ tính 0 điểm nếu bạn nộp bài bây giờ. Bạn có chắc chắn muốn nộp không?`
         );
-        viTriCauHienTai = viTriCauBoTrong;
-        taiCauHoi();
-        return;
-      }
-
-      daNopBai = true;
-      let diemSo = 0;
-      danhSachCauHoi.forEach((q, idx) => {
-        if (mangDapAnNguoiDung[idx] === q.correct) {
-          diemSo++;
+        if (!xacNhanNop) {
+          viTriCauHienTai = viTriCauBoTrong;
+          taiCauHoi();
+          return;
         }
-      });
-
-      // --- BẮT ĐẦU PHẦN TÍCH HỢP HỆ THỐNG XU ---
-      // 1. Tính toán xu: 20 điểm/câu
-      let xuDuocNhan = diemSo * 20;
-      
-      // 2. Thưởng 100 xu nếu làm đúng full 20 câu
-      if (diemSo === 20) {
-        xuDuocNhan += 100;
-        alert("Tuyệt vời! Bạn làm đúng hết tất cả các câu, nhận thêm 100 xu thưởng!");
       }
 
-      // 3. Cộng dồn vào ví tiền
-      let tongXuHienTai = parseInt(localStorage.getItem("tongXu")) || 0;
-      localStorage.setItem("tongXu", tongXuHienTai + xuDuocNhan);
-      
-      // 4. Thông báo cho người dùng
-      alert(`Bạn làm đúng: ${diemSo}/${danhSachCauHoi.length} câu.\nBạn nhận được: ${xuDuocNhan} xu!`);
-      // --- KẾT THÚC PHẦN TÍCH HỢP ---
-
-      localStorage.setItem("diemTracNghiem", diemSo);
-      localStorage.setItem("tongSoCau", danhSachCauHoi.length);
-      localStorage.setItem(
-        "mangDapAnNguoiDung",
-        JSON.stringify(mangDapAnNguoiDung),
-      );
-      localStorage.setItem("daNopBaiTrangThai", "true");
-
-      // ĐIỀU HƯỚNG SANG TRANG KẾT QUẢ HÌNH LẬP PHƯƠNG
-      let trangDich = "ketquakthhcn.html";
-      if (window.location.pathname.includes("kiemtrahltdtg.html")) {
-        trangDich = "ketquakthltdtg.html";
-      }
-      window.location.href = trangDich;
+      nopBai(false);
     }
   }
 
@@ -555,14 +537,10 @@ function cauTiepTheo() {
 
     const mangTrongMoi = new Array(danhSachCauHoi.length).fill(null);
     localStorage.setItem("mangDapAnNguoiDung", JSON.stringify(mangTrongMoi));
+    localStorage.removeItem(timerKey);
 
     alert("Hệ thống sẽ đặt lại bài kiểm tra về trạng thái ban đầu!");
-
-    if (window.location.pathname.includes("kiemtrahltdtg.html")) {
-      window.location.href = "kiemtrahltdtg.html";
-    } else {
-      window.location.href = "kiemtrahltdtg.html";
-    }
+    window.location.href = window.location.pathname.split("/").pop();
   }
 }
 
@@ -574,11 +552,217 @@ function cauTruoc() {
   }
 }
 
-// Tự động chạy khi tải trang
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", taiCauHoi);
-} else {
-  taiCauHoi();
+// Hàm nộp bài tính điểm
+function nopBai(isAuto = false) {
+  if (daNopBai) return;
+
+  if (isAuto) {
+    alert("Hết giờ làm bài! Hệ thống tự động nộp bài của bạn.");
+  }
+
+  daNopBai = true;
+  let diemSo = 0;
+  danhSachCauHoi.forEach((q, idx) => {
+    if (mangDapAnNguoiDung[idx] === q.correct) {
+      diemSo++;
+    }
+  });
+
+  // --- BẮT ĐẦU PHẦN TÍCH HỢP HỆ THỐNG XU ---
+  let xuDuocNhan = diemSo * 20;
+
+  if (diemSo === 20) {
+    xuDuocNhan += 100;
+    alert(
+      "Tuyệt vời! Bạn làm đúng hết tất cả các câu, nhận thêm 100 xu thưởng!",
+    );
+  }
+
+  let tongXuHienTai = parseInt(localStorage.getItem("tongXu")) || 0;
+  localStorage.setItem("tongXu", tongXuHienTai + xuDuocNhan);
+
+  alert(
+    `Bạn làm đúng: ${diemSo}/${danhSachCauHoi.length} câu.\nBạn nhận được: ${xuDuocNhan} xu!`
+  );
+  // --- KẾT THÚC PHẦN TÍCH HỢP ---
+
+  localStorage.setItem("diemTracNghiem", diemSo);
+  localStorage.setItem("tongSoCau", danhSachCauHoi.length);
+  localStorage.setItem(
+    "mangDapAnNguoiDung",
+    JSON.stringify(mangDapAnNguoiDung),
+  );
+  localStorage.setItem("daNopBaiTrangThai", "true");
+
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
+  localStorage.removeItem(timerKey);
+
+  window.location.href = redirectUrl;
 }
 
+// --- BẢNG ĐIỀU HƯỚNG VÀ THEO DÕI TIẾN TRÌNH CÂU HỎI (QUESTION PALETTE) ---
+function renderPalette() {
+  const container = document.getElementById("question-palette-container");
+  if (!container) return;
 
+  container.innerHTML = "";
+
+  const title = document.createElement("div");
+  title.className = "palette-title";
+  title.innerText = "Tiến độ câu hỏi";
+  container.appendChild(title);
+
+  const grid = document.createElement("div");
+  grid.className = "palette-grid";
+
+  danhSachCauHoi.forEach((cau, i) => {
+    const item = document.createElement("div");
+    item.className = "palette-item";
+    item.innerText = i + 1;
+
+    if (daNopBai && dangXemLai) {
+      if (mangDapAnNguoiDung[i] === cau.correct) {
+        item.classList.add("correct");
+      } else if (mangDapAnNguoiDung[i] !== null) {
+        item.classList.add("incorrect");
+      } else {
+        item.classList.add("unanswered");
+      }
+    } else {
+      if (mangDapAnNguoiDung[i] !== null) {
+        item.classList.add("answered");
+      } else {
+        item.classList.add("unanswered");
+      }
+    }
+
+    if (i === viTriCauHienTai) {
+      item.classList.add("current");
+    }
+
+    item.onclick = function () {
+      viTriCauHienTai = i;
+      taiCauHoi();
+    };
+
+    grid.appendChild(item);
+  });
+
+  container.appendChild(grid);
+
+  // Tạo thêm nút hành động Nộp bài / Làm lại ngay dưới Palette Grid
+  const actionBtn = document.createElement("button");
+  actionBtn.id = "palette-action-btn";
+
+  if (daNopBai) {
+    actionBtn.className = "palette-btn btn-retry";
+    actionBtn.innerText = "Làm lại";
+    actionBtn.onclick = function() {
+      if (confirm("Bạn có chắc chắn muốn đặt lại và làm lại bài trắc nghiệm này từ đầu?")) {
+        lamLai();
+      }
+    };
+  } else {
+    actionBtn.className = "palette-btn btn-submit";
+    actionBtn.innerText = "Nộp bài";
+    actionBtn.onclick = function() {
+      const viTriCauBoTrong = mangDapAnNguoiDung.findIndex((ans) => ans === null);
+      const soCauChuaLam = mangDapAnNguoiDung.filter((ans) => ans === null).length;
+
+      if (soCauChuaLam > 0) {
+        const xacNhanNop = confirm(
+          `Bạn còn ${soCauChuaLam} câu chưa hoàn thành. Các câu này sẽ tính 0 điểm nếu bạn nộp bài bây giờ. Bạn có chắc chắn muốn nộp không?`
+        );
+        if (!xacNhanNop) {
+          viTriCauHienTai = viTriCauBoTrong;
+          taiCauHoi();
+          return;
+        }
+      }
+      nopBai(false);
+    };
+  }
+  container.appendChild(actionBtn);
+}
+
+// --- BỘ ĐẾM THỜI GIAN LÀM BÀI (TIMER) ---
+let timerInterval = null;
+
+function startTimer() {
+  if (daNopBai && dangXemLai) {
+    const timerElement = document.getElementById("quiz-timer");
+    if (timerElement) timerElement.style.display = "none";
+    return;
+  }
+
+  const timerElement = document.getElementById("quiz-timer");
+  const timerText = document.getElementById("timer-text");
+  if (!timerElement || !timerText) return;
+
+  timerElement.style.display = "flex";
+
+  let remainingTime = parseInt(localStorage.getItem(timerKey));
+  if (isNaN(remainingTime) || remainingTime < 0) {
+    remainingTime = 1800; // 30 phút
+    localStorage.setItem(timerKey, remainingTime);
+  }
+
+  capNhatGiaoDienTimer(remainingTime);
+
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    remainingTime--;
+    localStorage.setItem(timerKey, remainingTime);
+
+    capNhatGiaoDienTimer(remainingTime);
+
+    if (remainingTime <= 0) {
+      clearInterval(timerInterval);
+      localStorage.removeItem(timerKey);
+      nopBai(true);
+    }
+  }, 1000);
+}
+
+function capNhatGiaoDienTimer(seconds) {
+  const timerText = document.getElementById("timer-text");
+  const timerElement = document.getElementById("quiz-timer");
+  if (!timerText || !timerElement) return;
+
+  const minutes = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  timerText.innerText = `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+  if (seconds <= 300) {
+    timerElement.classList.add("warning");
+  } else {
+    timerElement.classList.remove("warning");
+  }
+}
+
+// Tự động chạy khi tải trang
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", () => {
+    taiCauHoi();
+    startTimer();
+  });
+} else {
+  taiCauHoi();
+  startTimer();
+}
+
+// Bổ sung hàm tiện ích reset bài trắc nghiệm
+function lamLai() {
+  localStorage.removeItem("daNopBaiTrangThai");
+  localStorage.removeItem("dangXemLai");
+  localStorage.removeItem("diemTracNghiem");
+
+  const mangTrongMoi = new Array(danhSachCauHoi.length).fill(null);
+  localStorage.setItem("mangDapAnNguoiDung", JSON.stringify(mangTrongMoi));
+  localStorage.removeItem(timerKey);
+
+  alert("Đã đặt lại bài trắc nghiệm thành công!");
+  window.location.href = window.location.pathname.split("/").pop();
+}
