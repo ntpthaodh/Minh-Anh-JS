@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hồ Sơ Của Bạn</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+
+        :root {
+            --bg-color: linear-gradient(135deg, #ffeef5, #f3f0ff);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #4b4453;
+
+            --accent-color: #ff7eb6;
+            --accent-hover: #ff5fa2;
+
+            --purple: #a78bfa;
+            --pink: #ffb6d9;
+
+            --border-radius: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+
+            font-family: 'Segoe UI', sans-serif;
+
+            background: var(--bg-color);
+
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            color: var(--text-main);
+        }
+
+        /* =========================
+           PROFILE CARD
+        ========================= */
+
+        .profile-card {
+            width: 100%;
+            max-width: 520px;
+
+            background: var(--card-bg);
+
+            padding: 45px 35px;
+
+            border-radius: var(--border-radius);
+
+            box-shadow:
+                0 15px 40px rgba(255, 126, 182, 0.2),
+                0 5px 15px rgba(0, 0, 0, 0.05);
+
+            backdrop-filter: blur(10px);
+
+            text-align: center;
+
+            position: relative;
+
+            overflow: hidden;
+
+            animation: fadeUp 0.7s ease;
+        }
+
+        .profile-card::before {
+            content: "";
+
+            position: absolute;
+            width: 200px;
+            height: 200px;
+
+            background: rgba(255, 182, 217, 0.25);
+
+            border-radius: 50%;
+
+            top: -70px;
+            right: -70px;
+        }
+
+        .profile-card::after {
+            content: "";
+
+            position: absolute;
+            width: 180px;
+            height: 180px;
+
+            background: rgba(167, 139, 250, 0.18);
+
+            border-radius: 50%;
+
+            bottom: -70px;
+            left: -70px;
+        }
+
+        /* =========================
+           AVATAR
+        ========================= */
+
+        .avatar-container {
+            position: relative;
+
+            width: 140px;
+            height: 140px;
+
+            margin: auto;
+            margin-bottom: 22px;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .avatar-container:hover {
+            transform: scale(1.05);
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+
+            border-radius: 50%;
+
+            overflow: hidden;
+
+            background: white;
+
+            border: 5px solid #ffd6ea;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            box-shadow: 0 8px 25px rgba(255, 126, 182, 0.25);
+        }
+
+        #avatar-img {
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            display: none;
+        }
+
+        .camera-badge {
+            position: absolute;
+
+            bottom: 8px;
+            right: 8px;
+
+            width: 38px;
+            height: 38px;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                var(--accent-color),
+                var(--purple)
+            );
+
+            color: white;
+
+            border: 3px solid white;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 15px;
+
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        /* =========================
+           TÊN
+        ========================= */
+
+        #display-name {
+            margin-bottom: 8px;
+
+            font-size: 2rem;
+            font-weight: 800;
+
+            color: #ff5fa2;
+        }
+
+        .edit-name-btn {
+            border: none;
+
+            background: #fff0f7;
+
+            color: #ff5fa2;
+
+            padding: 10px 18px;
+
+            border-radius: 999px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+
+            transition: 0.3s;
+        }
+
+        .edit-name-btn:hover {
+            background: #ffd6ea;
+            transform: translateY(-2px);
+        }
+
+        #name-input-field {
+            margin-top: 18px;
+            margin-bottom: 22px;
+
+            display: none;
+        }
+
+        input {
+            padding: 12px 15px;
+
+            border-radius: 14px;
+
+            border: 2px solid #f6d2e4;
+
+            outline: none;
+
+            width: 65%;
+
+            font-size: 15px;
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .save-btn {
+            padding: 12px 18px;
+
+            border: none;
+
+            background: linear-gradient(
+                135deg,
+                var(--accent-color),
+                var(--purple)
+            );
+
+            color: white;
+
+            border-radius: 14px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            margin-left: 6px;
+
+            transition: 0.3s;
+        }
+
+        .save-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* =========================
+           STATS
+        ========================= */
+
+        .stats {
+            margin: 30px 0;
+
+            padding: 25px;
+
+            border-radius: 22px;
+
+            background: linear-gradient(
+                135deg,
+                #fff7fb,
+                #f7f2ff
+            );
+
+            border: 2px solid #f7d7ea;
+
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.7);
+        }
+
+        .stats p {
+            font-size: 17px;
+            margin: 14px 0;
+            font-weight: 600;
+        }
+
+        /* =========================
+           BADGES
+        ========================= */
+
+        .badge-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+
+            gap: 12px;
+
+            margin-top: 25px;
+        }
+
+        .badge {
+            background: linear-gradient(
+                135deg,
+                #ffd6ea,
+                #e7dbff
+            );
+
+            padding: 10px 18px;
+
+            border-radius: 999px;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            color: #5b4b66;
+
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+
+            transition: 0.3s;
+        }
+
+        .badge:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        /* =========================
+           BUTTONS
+        ========================= */
+
+        .btn-home {
+            display: inline-block;
+
+            margin-top: 38px;
+
+            text-decoration: none;
+
+            color: white;
+
+            background: linear-gradient(
+                135deg,
+                #ff7eb6,
+                #a78bfa
+            );
+
+            padding: 14px 24px;
+
+            border-radius: 999px;
+
+            font-weight: bold;
+
+            transition: 0.3s;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-3px);
+        }
+
+        .logout-btn {
+            margin-top: 18px;
+
+            padding: 14px 24px;
+
+            border: none;
+
+            border-radius: 999px;
+
+            background: linear-gradient(
+                135deg,
+                #ff6b6b,
+                #ff8e8e
+            );
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        /* =========================
+           ANIMATION
+        ========================= */
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="profile-card">
+
+        <!-- Avatar -->
+        <div class="avatar-container"
+            onclick="document.getElementById('upload-avatar').click()">
+
+            <div class="avatar">
+
+                <svg id="default-icon"
+                    viewBox="0 0 24 24"
+                    width="80"
+                    height="80"
+                    fill="#bdc3c7">
+
+                    <path
+                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+
+                </svg>
+
+                <img id="avatar-img" src="" alt="Avatar">
+
+            </div>
+
+            <div class="camera-badge">
+                <i class="fas fa-camera"></i>
+            </div>
+
+        </div>
+
+        <input type="file"
+            id="upload-avatar"
+            accept="image/*"
+            style="display:none;"
+            onchange="previewImage(event)">
+
+        <!-- Name -->
+        <h1 id="display-name">Người chơi</h1>
+
+        <button class="edit-name-btn" onclick="toggleEdit()">
+            ✏️ Chỉnh sửa tên
+        </button>
+
+        <!-- Edit -->
+        <div id="name-input-field">
+
+            <input type="text"
+                id="new-name"
+                placeholder="Nhập tên mới...">
+
+            <button class="save-btn" onclick="saveName()">
+                Lưu
+            </button>
+
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+
+            <p>
+                💰 Tổng xu:
+                <span id="tong-xu">0</span>
+            </p>
+
+            <p>
+                🎁 Quà đã sở hữu:
+                <span id="so-luong-qua">0</span>
+            </p>
+
+        </div>
+
+        <!-- Badge -->
+        <div class="badge-list" id="badge-container"></div>
+
+        <!-- Buttons -->
+        <a href="index.html" class="btn-home">
+            ← Quay lại trang chính
+        </a>
+
+        <br>
+
+        <button class="logout-btn" onclick="logout()">
+            Đăng xuất
+        </button>
+
+    </div>
+
+    <script>
+
+        window.onload = function () {
+
+            const username =
+                localStorage.getItem("username");
+
+            // =========================
+            // CHƯA LOGIN
+            // =========================
+
+            if (!username) {
+
+                document.getElementById("display-name")
+                    .innerText = "Khách";
+
+                document.getElementById("tong-xu")
+                    .innerText = 0;
+
+                document.getElementById("so-luong-qua")
+                    .innerText = 0;
+
+                document.getElementById("badge-container")
+                    .innerHTML =
+                    "<p style='color:#999'>🌸 Hãy đăng nhập để lưu thành tích nha!</p>";
+
+                document.querySelector(".edit-name-btn")
+                    .style.display = "none";
+
+                document.querySelector(".logout-btn")
+                    .style.display = "none";
+
+                document.querySelector(".camera-badge")
+                    .style.display = "none";
+
+                return;
+            }
+
+            // =========================
+            // ĐÃ LOGIN
+            // =========================
+
+            document.getElementById("display-name")
+                .innerText = username;
+
+            document.getElementById("tong-xu")
+                .innerText =
+                localStorage.getItem("tongXu") || 0;
+
+            const quaDaSoHuu =
+                JSON.parse(
+                    localStorage.getItem("quaDaSoHuu")
+                ) || [];
+
+            document.getElementById("so-luong-qua")
+                .innerText = quaDaSoHuu.length;
+
+            const container =
+                document.getElementById("badge-container");
+
+            if (quaDaSoHuu.length > 0) {
+
+                quaDaSoHuu.forEach(tenQua => {
+
+                    const span =
+                        document.createElement("span");
+
+                    span.className = "badge";
+
+                    span.innerText = "✨ " + tenQua;
+
+                    container.appendChild(span);
+
+                });
+
+            } else {
+
+                container.innerHTML =
+                    "<p style='color:#999'>Chưa có món quà nào!</p>";
+            }
+
+            const savedAvatar =
+                localStorage.getItem("userAvatarData");
+
+            if (savedAvatar) {
+
+                showImage(savedAvatar);
+            }
+        };
+
+        // =========================
+        // TOGGLE EDIT
+        // =========================
+
+        function toggleEdit() {
+
+            const field =
+                document.getElementById("name-input-field");
+
+            field.style.display =
+                field.style.display === "block"
+                ? "none"
+                : "block";
+        }
+
+        // =========================
+        // SAVE NAME
+        // =========================
+
+        function saveName() {
+
+            const newName =
+                document.getElementById("new-name").value;
+
+            if (newName.trim() !== "") {
+
+                localStorage.setItem(
+                    "username",
+                    newName
+                );
+
+                document.getElementById("display-name")
+                    .innerText = newName;
+
+                toggleEdit();
+            }
+        }
+
+        // =========================
+        // SHOW IMAGE
+        // =========================
+
+        function showImage(dataURL) {
+
+            const img =
+                document.getElementById("avatar-img");
+
+            img.src = dataURL;
+
+            img.style.display = "block";
+
+            document.getElementById("default-icon")
+                .style.display = "none";
+        }
+
+        // =========================
+        // PREVIEW IMAGE
+        // =========================
+
+        function previewImage(event) {
+
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function () {
+
+                localStorage.setItem(
+                    "userAvatarData",
+                    reader.result
+                );
+
+                showImage(reader.result);
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        // =========================
+        // LOGOUT
+        // =========================
+
+        function logout() {
+
+            localStorage.clear();
+
+            alert("Đăng xuất thành công!");
+
+            window.location.href = "login.html";
+        }
+
+    </script>
+
+</body>
+
+</html>

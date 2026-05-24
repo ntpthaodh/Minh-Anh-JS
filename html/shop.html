@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Cửa hàng Chikawa Cute</title>
+
+    <style>
+
+        body{
+            font-family:'Segoe UI',sans-serif;
+            background:#fffaf0;
+            text-align:center;
+            padding:20px;
+        }
+
+        /* =========================
+           NÚT QUAY VỀ
+        ========================= */
+
+        .back-btn{
+
+            position:fixed;
+
+            top:20px;
+            left:20px;
+
+            background:white;
+
+            color:#4b7bec;
+
+            text-decoration:none;
+
+            padding:12px 22px;
+
+            border-radius:16px;
+
+            font-weight:bold;
+
+            box-shadow:
+            0 8px 20px rgba(0,0,0,0.08);
+
+            transition:0.3s;
+
+            z-index:999;
+        }
+
+        .back-btn:hover{
+
+            transform:translateY(-3px);
+
+            background:#4b7bec;
+
+            color:white;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header-box{
+
+            background:#fff;
+
+            padding:20px;
+
+            border-radius:25px;
+
+            box-shadow:
+            0 4px 15px rgba(0,0,0,0.1);
+
+            display:inline-block;
+
+            margin-bottom:30px;
+        }
+
+        /* =========================
+           SHOP
+        ========================= */
+
+        .container{
+
+            display:flex;
+
+            justify-content:center;
+
+            gap:15px;
+
+            flex-wrap:wrap;
+
+            max-width:1000px;
+
+            margin:auto;
+        }
+
+        .shop-item{
+
+            background:white;
+
+            border-radius:20px;
+
+            padding:15px;
+
+            width:170px;
+
+            box-shadow:
+            0 5px 15px rgba(0,0,0,0.05);
+
+            transition:0.3s;
+        }
+
+        .shop-item:hover{
+
+            transform:
+            translateY(-5px)
+            scale(1.03);
+        }
+
+        .shop-item img{
+
+            width:80px;
+            height:80px;
+
+            margin-bottom:10px;
+        }
+
+        .btn-doi{
+
+            background:#ff9ff3;
+
+            color:white;
+
+            border:none;
+
+            padding:8px 15px;
+
+            border-radius:20px;
+
+            cursor:pointer;
+
+            font-weight:bold;
+
+            width:100%;
+
+            margin-top:10px;
+        }
+
+        .btn-owned{
+
+            background:#dcdde1;
+
+            color:#7f8c8d;
+
+            cursor:not-allowed;
+        }
+
+        #so-xu{
+
+            color:#e84393;
+
+            font-weight:bold;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- NÚT QUAY VỀ -->
+    <a href="index.html" class="back-btn">
+        ← Trang chủ
+    </a>
+
+    <!-- HEADER -->
+    <div class="header-box">
+
+        <h1>✨ Cửa hàng quà ✨</h1>
+
+        <h2>
+            Xu của bạn:
+            <span id="so-xu">0</span> 💰
+        </h2>
+
+    </div>
+
+    <!-- SHOP -->
+    <div class="container" id="danh-sach"></div>
+
+    <script>
+
+        // Danh sách quà
+        const danhSachQua = [
+
+            { name:"Ngôi Sao May Mắn", price:50, img:"star.png" },
+
+            { name:"Kim Cương Vui Vẻ", price:100, img:"diamond.png" },
+
+            { name:"Rương Báu Cute", price:150, img:"chest.png" },
+
+            { name:"Tiền Xu Bay Bổng", price:200, img:"coin.png" },
+
+            { name:"Cây Kẹo Ngọt", price:250, img:"candy.png" },
+
+            { name:"Gối Ôm Chikawa", price:300, img:"pillow.png" },
+
+            { name:"Huy Hiệu Vàng", price:350, img:"badge.png" },
+
+            { name:"Thú Bông Nhỏ", price:400, img:"plush.png" },
+
+            { name:"Mũ Hình Thỏ", price:450, img:"hat.png" },
+
+            { name:"Vương Miện Trùm", price:500, img:"crown.png" },
+
+            { name:"Chìa Khóa Vạn Năng", price:600, img:"key.png" },
+
+            { name:"Siêu Phẩm Chikawa", price:1000, img:"super.png" }
+
+        ];
+
+        let xu =
+            parseInt(localStorage.getItem("tongXu")) || 0;
+
+        let quaDaSoHuu =
+            JSON.parse(localStorage.getItem("quaDaSoHuu")) || [];
+
+        document.getElementById("so-xu").innerText = xu;
+
+        const container =
+            document.getElementById("danh-sach");
+
+        // HIỂN THỊ QUÀ
+        danhSachQua.forEach((qua)=>{
+
+            const isOwned =
+                quaDaSoHuu.includes(qua.name);
+
+            const html = `
+
+                <div class="shop-item">
+
+                    <img src="images/${qua.img}" alt="${qua.name}">
+
+                    <h4>${qua.name}</h4>
+
+                    <p>${qua.price} xu</p>
+
+                    <button
+                        class="btn-doi ${isOwned ? 'btn-owned' : ''}"
+
+                        onclick="doiQua('${qua.name}', ${qua.price})"
+
+                        ${isOwned ? 'disabled' : ''}>
+
+                        ${isOwned ? 'Đã sở hữu' : 'Đổi ngay'}
+
+                    </button>
+
+                </div>
+
+            `;
+
+            container.innerHTML += html;
+
+        });
+
+        // ĐỔI QUÀ
+        function doiQua(tenQua, gia) {
+
+            if (xu >= gia) {
+
+                xu -= gia;
+
+                localStorage.setItem("tongXu", xu);
+
+                quaDaSoHuu.push(tenQua);
+
+                localStorage.setItem(
+                    "quaDaSoHuu",
+                    JSON.stringify(quaDaSoHuu)
+                );
+
+                alert("Bạn đã sở hữu: " + tenQua + "! 🎉");
+
+                location.reload();
+
+            } else {
+
+                alert("Không đủ xu rồi! Làm thêm bài tập nhé! 📚");
+            }
+        }
+
+    </script>
+
+</body>
+</html>
