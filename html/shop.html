@@ -279,6 +279,16 @@
                     JSON.stringify(quaDaSoHuu)
                 );
 
+                // Ghi nhận nhật ký giao dịch chi tiêu xu
+                let lichSuGiaoDich = JSON.parse(localStorage.getItem("lichSuGiaoDich")) || [];
+                lichSuGiaoDich.push({
+                    type: "tru_xu",
+                    amount: gia,
+                    reason: `Đổi vật phẩm: ${tenQua}`,
+                    time: new Date().toLocaleString("vi-VN")
+                });
+                localStorage.setItem("lichSuGiaoDich", JSON.stringify(lichSuGiaoDich));
+
                 alert("Bạn đã sở hữu: " + tenQua + "! 🎉");
 
                 location.reload();

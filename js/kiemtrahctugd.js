@@ -552,7 +552,39 @@ function nopBai(isAuto = false) {
     "mangDapAnNguoiDung",
     JSON.stringify(mangDapAnNguoiDung),
   );
-  localStorage.setItem("daNopBaiTrangThai", "true");
+    localStorage.setItem("daNopBaiTrangThai", "true");
+
+  // --- GHI NHẬN LỊCH SỬ HỌC TẬP VÀ GIAO DỊCH XU ---
+  const topicNames = {
+      hhcn: "Hình Hộp Chữ Nhật",
+      hlp: "Hình Lập Phương",
+      htt: "Hình Trụ Tròn",
+      ltdtg: "Lăng Trụ Đứng Tam Giác",
+      ctgd: "Chóp Tam Giác Đều",
+      ctgdeu: "Chóp Tứ Giác Đều"
+  };
+  const currentTopicName = topicNames[topicId] || "Bài kiểm tra";
+
+  let lichSuHocTap = JSON.parse(localStorage.getItem("lichSuHocTap")) || [];
+  lichSuHocTap.push({
+      topicId: topicId,
+      topicName: currentTopicName,
+      diemSo: diemSo,
+      tongSoCau: danhSachCauHoi.length,
+      percentage: Math.round((diemSo / danhSachCauHoi.length) * 100),
+      time: new Date().toLocaleString("vi-VN")
+  });
+  localStorage.setItem("lichSuHocTap", JSON.stringify(lichSuHocTap));
+
+  let lichSuGiaoDich = JSON.parse(localStorage.getItem("lichSuGiaoDich")) || [];
+  lichSuGiaoDich.push({
+      type: "nhan_xu",
+      amount: xuDuocNhan,
+      reason: `Hoàn thành bài trắc nghiệm: ${currentTopicName}`,
+      time: new Date().toLocaleString("vi-VN")
+  });
+  localStorage.setItem("lichSuGiaoDich", JSON.stringify(lichSuGiaoDich));
+
 
   if (timerInterval) {
     clearInterval(timerInterval);

@@ -174,42 +174,27 @@
     <main class="grid-container">
 
         <!-- HÌNH TRÒN -->
-        <div class="card"
-            onclick="playVideo(this,'cTS5KHiE91M')">
-
+        <div class="card" onclick="openVideo('cTS5KHiE91M')">
             <div class="card-inner">
                 <div class="icon circle"></div>
                 <h2>Hình Tròn</h2>
             </div>
-
-            <div class="video-target"></div>
-
         </div>
 
         <!-- TAM GIÁC -->
-        <div class="card"
-            onclick="playVideo(this,'W3UzjLDA6M4')">
-
+        <div class="card" onclick="openVideo('W3UzjLDA6M4')">
             <div class="card-inner">
                 <div class="icon triangle"></div>
                 <h2>Hình Tam Giác</h2>
             </div>
-
-            <div class="video-target"></div>
-
         </div>
 
         <!-- HÌNH VUÔNG -->
-        <div class="card"
-            onclick="playVideo(this,'W3UzjLDA6M4')">
-
+        <div class="card" onclick="openVideo('W3UzjLDA6M4')">
             <div class="card-inner">
                 <div class="icon cube"></div>
                 <h2>Hình Vuông</h2>
             </div>
-
-            <div class="video-target"></div>
-
         </div>
 
     </main>
@@ -247,6 +232,16 @@
         </div>
 
     </footer>
+
+    <!-- VIDEO MODAL POPUP -->
+    <div id="videoModal" class="modal" style="display: none;">
+        <div class="modal-content" style="max-width: 900px; width: 85%;">
+            <span class="close-btn" onclick="closeVideo()">&times;</span>
+            <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 10px;">
+                <iframe id="youtubePlayer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
 
     <script type="module" src="../js/script.js"></script>
 

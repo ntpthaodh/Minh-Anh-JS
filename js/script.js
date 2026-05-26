@@ -210,6 +210,7 @@ closeBtn?.addEventListener("click", closeModal);
 window.addEventListener("click", (e) => {
   if (e.target === modal) {
     closeModal();
+    closeVideo();
   }
 });
 
@@ -458,3 +459,5 @@ function openTopic(topic) {
 }
 
 window.openTopic = openTopic;
+window.openVideo = openVideo;
+window.closeVideo = closeVideo;
